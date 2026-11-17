@@ -1,0 +1,48 @@
+# Template file for 'awesome-git'
+pkgname=awesome-git
+version=4.3.20261107
+revision=1
+_commit=1a5163ebd2b0c92f0dd19ab9e02762b05f629a80
+build_style=cmake
+build_helper="qemu"
+configure_args="-DSYSCONFDIR=/etc -DOVERRIDE_VERSION=v${version}-g${_commit:0:7}"
+conf_files="/etc/xdg/awesome/rc.lua"
+hostmakedepends="ruby ruby-asciidoctor ImageMagick pkg-config"
+makedepends="libxcb-devel pango-devel cairo-devel glib-devel libX11-devel
+ xorgproto xcb-util-devel xcb-util-image-devel xcb-util-keysyms-devel
+ xcb-util-wm-devel xcb-util-cursor-devel xcb-util-xrm-devel
+ startup-notification-devel libxdg-basedir-devel gdk-pixbuf-devel
+ dbus-devel libxkbcommon-devel"
+depends="dbus-x11 pango"
+short_desc="Highly configurable, next gen framework window manager for X (git)"
+maintainer="Mykhailo Sakiiev <sakievmi@proton.me>"
+license="GPL-2.0-or-later"
+homepage="https://awesomewm.org"
+distfiles="https://github.com/awesomeWM/awesome/archive/${_commit}.tar.gz"
+checksum=b2940c5d9340ade9c9e8b450deaed09e87d9a074448b79d8c345abd21abfa6b8
+provides="awesome-${version}_${revision}"
+conflicts="awesome>=0"
+
+build_options="jit"
+desc_option_jit="Use LuaJIT to build Awesome"
+
+if [ "$build_option_jit" ]; then
+	hostmakedepends+=" LuaJIT lua51-lgi"
+	makedepends+=" LuaJIT-devel lua51-lgi"
+	depends+=" lua51-lgi>=0.7.2"
+	configure_args+="
+		-DLUA_LIBRARY=$XBPS_CROSS_BASE/usr/lib/libluajit-5.1.so
+		-DLUA_INCLUDE_DIR=$XBPS_CROSS_BASE/usr/include/luajit-2.1
+		-DLUA_EXECUTABLE=/usr/bin/luajit"
+else
+	hostmakedepends+=" lua53 lua53-lgi"
+	makedepends+=" lua53-devel lua53-lgi"
+	depends+=" lua53-lgi>=0.7.2"
+	configure_args+=" -DLUA_EXECUTABLE=/usr/bin/lua5.3"
+fi
+
+CFLAGS="-fcommon"
+
+post_patch() {
+	sed -i '/add_dependencies.*check-examples/d' CMakeLists.txt
+}

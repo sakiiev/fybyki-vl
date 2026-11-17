@@ -1,0 +1,17 @@
+# Template file for 'thcrap-steam-proton-wrapper-git'
+pkgname=thcrap-steam-proton-wrapper-git
+version=0.20260811
+revision=1
+_commit=9c4f606b046b193aa5358b6a5ac3dacf1871b5ca
+depends="bash curl grep zenity unzip"
+short_desc="Wrapper script for patching the official Touhou games"
+maintainer="Mykhailo Sakiiev <sakievmi@proton.me>"
+license="Unlicense"
+homepage="https://github.com/nerusuki/thcrap-steam-proton-wrapper"
+distfiles="${homepage}/archive/${_commit}.tar.gz"
+checksum=6bf468a8669d05e12dd22048d8abf24bad27d778a49b0a4ad8443f96872cf1b1
+
+do_install() {
+	vbin thcrap_proton
+	vlicense UNLICENSE
+}
